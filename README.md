@@ -31,7 +31,7 @@
 ### 使用说明
  最简单的使用就是依赖soil部分就可以了，我们也会提供aar包，后面提供网络依赖坐标，这样也便于管理版本升级切换。
  
-#### 网络使用
+#### 网络请求
 - 请求支持全局配置和单个请求的局部配置，如果局部配置与全局配置冲突，那么局部配置会替换全局配置。
 
 - 全局配置支持`CallAdapter.Factory`、`Converter.Factory`、`okhttp3.Call.Factory`、`SSLSocketFactory`、`HostnameVerifier`、`ConnectionPool`、主机URL、请求头、请求参数、代理、拦截器、Cookie、OKHttp缓存、连接超时时间、读写超时时间、失败重试次数、失败重试间隔时间的一系列配置。
@@ -274,11 +274,9 @@ SoilHttp.base(new ApiPostRequest("postUrlAuthor")
 ```
 有些POST请求可能URL后面也带有参数，这样的话需要通过addUrlParam进行设置，与添加到请求body的参数设置方式addParam是不一样的，这点需要注意。
 
-### 上传下载简介
+#### 上传下载简介
 
 该库提供的上传下载功能比较简洁实用，基本能满足单个线程下的常用相关操作，如果需要多线程和断点续传功能就需要上层实现，也可以依赖如RxDownload库。
-
-#### 功能：
 
 - 支持单文件和多文件上传。
 
@@ -292,8 +290,6 @@ SoilHttp.base(new ApiPostRequest("postUrlAuthor")
 #### 缓存简介
 
 包含内存、磁盘二级缓存以及SharedPreferences缓存，可自由拓展。磁盘缓存支持KEY加密存储，可定制缓存时长。SharedPreferences支持内容安全存储，采用Base64加密解密。
-
-### 使用示例：
 
 - 内存存储：`MemoryCache.getInstance().put("authorInfo", mAuthorModel);`
 
@@ -311,8 +307,6 @@ SoilHttp.base(new ApiPostRequest("postUrlAuthor")
 #### 事件总线简介
 
 采用Rx响应式编程思想建立的RxBus模块，采用注解方式标识事件消耗地，通过遍历查找事件处理方法。支持可插拔，可替换成EventBus库，只需上层采用的同样是注解方式，那么上层是不需要动任何代码的。
-
-### 使用示例：
 
 - 发送事件：`BusFactory.getBus().post(new AuthorEvent().setAuthorModel(mAuthorModel));`
 
@@ -335,8 +329,6 @@ public void showAuthor(IEvent event) {
 #### 图片加载简介：
 采用Glide库进行图片加载，支持轻量级图片加载，该模块支持可插拔，可根据需求替换成任意图片加载库，如果项目中对于图片处理要求比较高，那么可以替换成Facebook提供的Fresco库。
 
-### 使用示例：
-
 - 初始化：在application中进行如下初始化操作：`LoaderFactory.getLoader().init(this);`
 
 - 调用过程：
@@ -344,4 +336,7 @@ public void showAuthor(IEvent event) {
 LoaderManager.getLoader().loadResource((ImageView) helper.getView(R.id.ivPic), R.mipmap.ic_logo, null);
 ```
 如果需要定制使用其他图片加载框架如Fresco，那么只需将实现ILoader接口的对象在应用初始化时通过`LoaderFactory.setLoader(new FrescoLoader())`传进去即可。
+
+### 最后
+ 这里不仅是在自己的项目中实践和总结，还大量的参考了第三方开源的项目，特此感谢。此项目很多功能也许并不全面，还有很多的冗余功能，在后续的优化维护中会不断的改进。
 
