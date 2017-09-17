@@ -7,7 +7,7 @@
  - 主要功能包含网络(上传、下载、缓存)、权限管理、图片加载等。基本都是项目中必用功能，模块间解耦，可拓展性强。
 
  - 本项目目前没有上传类似JCenter这样的仓库中心，暂时只能本地依赖。后面会提供网络依赖坐标。
- 
+
 ### 项目结构
 
  * 本项目有三个Module
@@ -52,7 +52,7 @@
 
 - 支持根据Tag中途取消请求，也可以取消所有请求。
 
-### 使用示例：
+#### 使用示例：
 
 第一步需要在application中进行全局初始化以及添加全局相关配置，具体使用如下：
 
@@ -123,7 +123,8 @@ private void initNet() {
 ```
 后面就是具体调用请求的过程，请求的类型有多种情形，下面就以最常用的几种类型举例说明，具体效果可以查看demo，以下为使用示例：
 
-- GET 不带缓存
+ - GET 不带缓存
+
 ```
 public void getBanner() {
         if(mView!=null) {
@@ -153,9 +154,11 @@ public void getBanner() {
     }
     
 ```
+
 提供了多种参数的添加方式，具体可查看BaseRequest中提供的API。
 
-- GET 带缓存
+ - GET 带缓存
+
 ```
 SoilHttp.GET("getAuthor")
         .setLocalCache(true)//设置是否使用缓存，如果使用缓存必须设置为true
@@ -170,9 +173,11 @@ SoilHttp.GET("getAuthor")
             }
         });
 ```
+
 由于带缓存方式有点不一样，需要告知上层是否是缓存数据，所以需要外部包裹一层CacheResult结构，使用时必须要按照这种方式设置model，还有需要注意的是必须要设置缓存开关为true，如果为false是没法解析CacheResult结构的，这点一定切记。
 
-- GET 返回String
+ - GET 返回String
+
 ```
 SoilHttp.GET("getString").request(new ACallback<String>() {
     @Override
@@ -185,7 +190,8 @@ SoilHttp.GET("getString").request(new ACallback<String>() {
 });
 ```
 
-- GET 返回List
+ - GET 返回List
+
 ```
 public void getDataItems(int pageNum, int pageSize) {
         if(mView!=null){
@@ -215,7 +221,9 @@ public void getDataItems(int pageNum, int pageSize) {
         }
     }
 ```
-- POST 上传表单
+
+ - POST 上传表单
+
 ```
 SoilHttp.base(new ApiPostRequest("postFormAuthor")
         .addForm("author_name", getString(R.string.author_name))
@@ -230,9 +238,11 @@ SoilHttp.base(new ApiPostRequest("postFormAuthor")
             }
         });
 ```
+
 上传表单时需要通过addForm将键值对一个个添加进去，支持上传中文字符。
 
-- POST 上传json
+ - POST 上传json
+
 ```
 AuthorModel mAuthorModel = new AuthorModel();
 mAuthorModel.setAuthor_id(1008);
@@ -250,9 +260,11 @@ SoilHttp.base(new ApiPostRequest("postJsonAuthor")
             }
         });
 ```
+
 上传JSON格式数据时需要先将数据转换成JSON格式，再通过setJson添加进去。
 
-- POST 后缀带请求参数
+ - POST 后缀带请求参数
+
 ```
 AuthorModel mAuthorModel = new AuthorModel();
 mAuthorModel.setAuthor_id(1009);
@@ -272,49 +284,51 @@ SoilHttp.base(new ApiPostRequest("postUrlAuthor")
             }
         });
 ```
+
 有些POST请求可能URL后面也带有参数，这样的话需要通过addUrlParam进行设置，与添加到请求body的参数设置方式addParam是不一样的，这点需要注意。
 
-#### 上传下载简介
+#### 上传下载
 
 该库提供的上传下载功能比较简洁实用，基本能满足单个线程下的常用相关操作，如果需要多线程和断点续传功能就需要上层实现，也可以依赖如RxDownload库。
 
-- 支持单文件和多文件上传。
+ - 支持单文件和多文件上传。
 
-- 支持每个文件都有对应的回调进度。
+ - 支持每个文件都有对应的回调进度。
 
-- 支持传入字节流或者字节数组进行上传。
+ - 支持传入字节流或者字节数组进行上传。
 
-- 支持下载进度回调，每秒刷新下载进度。
+ - 支持下载进度回调，每秒刷新下载进度。
 
 
-#### 缓存简介
+#### 缓存
 
 包含内存、磁盘二级缓存以及SharedPreferences缓存，可自由拓展。磁盘缓存支持KEY加密存储，可定制缓存时长。SharedPreferences支持内容安全存储，采用Base64加密解密。
 
-- 内存存储：`MemoryCache.getInstance().put("authorInfo", mAuthorModel);`
+ - 内存存储：`MemoryCache.getInstance().put("authorInfo", mAuthorModel);`
 
-- 内存获取：`MemoryCache.getInstance().get("authorInfo");`
+ - 内存获取：`MemoryCache.getInstance().get("authorInfo");`
 
-- 磁盘缓存存储：`diskCache.put("authorInfo", mAuthorModel);`
+ - 磁盘缓存存储：`diskCache.put("authorInfo", mAuthorModel);`
 
-- 磁盘缓存获取：`diskCache.get("authorInfo");`
+ - 磁盘缓存获取：`diskCache.get("authorInfo");`
 
-- SharedPreferences缓存存储：`spCache.put("authorInfo", mAuthorModel);`
+ - SharedPreferences缓存存储：`spCache.put("authorInfo", mAuthorModel);`
 
-- SharedPreferences缓存获取：`spCache.get("authorInfo");`
+ - SharedPreferences缓存获取：`spCache.get("authorInfo");`
 
 
-#### 事件总线简介
+#### 事件总线
 
 采用Rx响应式编程思想建立的RxBus模块，采用注解方式标识事件消耗地，通过遍历查找事件处理方法。支持可插拔，可替换成EventBus库，只需上层采用的同样是注解方式，那么上层是不需要动任何代码的。
 
-- 发送事件：`BusFactory.getBus().post(new AuthorEvent().setAuthorModel(mAuthorModel));`
+ - 发送事件：`BusFactory.getBus().post(new AuthorEvent().setAuthorModel(mAuthorModel));`
 
-- 注册事件：`BusFactory.getBus().register(this);`
+ - 注册事件：`BusFactory.getBus().register(this);`
 
-- 取消注册：`BusFactory.getBus().unregister(this);`
+ - 取消注册：`BusFactory.getBus().unregister(this);`
 
-- 接收事件：
+ - 接收事件：
+
 ```
 @EventSubscribe
 public void showAuthor(IEvent event) {
@@ -323,20 +337,24 @@ public void showAuthor(IEvent event) {
     }
 }
 ```
-如果需要定制使用其他Bus如EventBus，那么只需将实现IBus接口的对象在应用初始化时通过`BusFactory.setBus(new EventBus())`传进去即可。
+
+ 如果需要定制使用其他Bus如EventBus，那么只需将实现IBus接口的对象在应用初始化时通过`BusFactory.setBus(new EventBus())`传进去即可。
 
 
-#### 图片加载简介：
+#### 图片加载
+
 采用Glide库进行图片加载，支持轻量级图片加载，该模块支持可插拔，可根据需求替换成任意图片加载库，如果项目中对于图片处理要求比较高，那么可以替换成Facebook提供的Fresco库。
 
-- 初始化：在application中进行如下初始化操作：`LoaderFactory.getLoader().init(this);`
+ - 初始化：在application中进行如下初始化操作：`LoaderFactory.getLoader().init(this);`
 
-- 调用过程：
+ - 调用过程：
+
 ```
 LoaderManager.getLoader().loadResource((ImageView) helper.getView(R.id.ivPic), R.mipmap.ic_logo, null);
 ```
 如果需要定制使用其他图片加载框架如Fresco，那么只需将实现ILoader接口的对象在应用初始化时通过`LoaderFactory.setLoader(new FrescoLoader())`传进去即可。
 
+
 ### 最后
- 这里不仅是在自己的项目中实践和总结，还大量的参考了第三方开源的项目，特此感谢。此项目很多功能也许并不全面，还有很多的冗余功能，在后续的优化维护中会不断的改进。
+这里不仅是在自己的项目中实践和总结，还大量的参考了第三方开源的项目，特此感谢。此项目很多功能也许并不全面，还有很多的冗余功能，在后续的优化维护中会不断的改进。
 
