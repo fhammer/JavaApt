@@ -11,6 +11,7 @@
     <modules>
         <module>Annotions</module>
         <module>Processtor</module>
+        <module>AptClient</module>
     </modules>
 
     <build>
